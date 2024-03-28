@@ -128,9 +128,9 @@ function performFittsAnalysis() {
   });
 }
 
+
+
 // DARK PATTERN DETECTION CODE
-
-
 const detectDarkPatterns = (htmlCode, cssCode) => {
   let data=``;
   const darkPatterns = [];
@@ -138,7 +138,7 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
   const parser = new DOMParser();
   const htmlDoc = parser.parseFromString(htmlCode, 'text/html');
 
-  // Pop-up ads with false hierarchy between close and install buttons
+  // False hierarchy dark pattern
   const popUpAds = findPopUpAds(htmlDoc);
   popUpAds.forEach(ad => {
     const closeButton = findCloseButton(ad);
@@ -168,7 +168,7 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
     }
   });
 
-  // Free trial dark pattern with hidden terms
+  // Hidden information and forced continuity dark pattern
   const offers = htmlDoc.querySelectorAll('p');
   offers.forEach(offer => {
     const offerStyles = offer.style;
@@ -185,7 +185,7 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
     }
   });
 
-  // Check if the checkbox is preselected without the user's permission
+  // Preselection dark pattern
   const preselectedCheckboxes = htmlDoc.querySelectorAll('input[type="checkbox"]:checked');
   preselectedCheckboxes.forEach(checkbox => {
       if (isSensitiveInput(checkbox)) {
@@ -197,6 +197,7 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
       }
   });
 
+  //Aesthetic Manipulation dark pattern
   const popUpAd = findPopUpAds(htmlDoc);
   popUpAd.forEach(ad => {
     const smallCloseButton = findsmallCloseButton(ad);
@@ -214,6 +215,7 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
     }
   });
 
+  //Manipulative techniques dark pattern
   const offerends = htmlDoc.querySelectorAll('p');
   offerends.forEach(offerend => {
     const offerendStyles = offerend.style;
