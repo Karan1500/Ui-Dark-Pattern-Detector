@@ -39,13 +39,16 @@ function generateReportContent(numHtmlElements, cssMetrics) {
 }
 
 function analyzeHtmlCss(htmlCode, cssCode) {
+  // Reset reportData before adding new data
+  reportData = '';
+
+  // Call generateReportContent to get HTML and CSS analysis, but don't include it in reportData
   const numHtmlElements = countHtmlElements(htmlCode);
-
   const cssMetrics = processCss(cssCode);
-
   const reportContent = generateReportContent(numHtmlElements, cssMetrics);
-
-  reportData += reportContent;
+  
+  // Call detectDarkPatterns and add its result to reportData
+  detectDarkPatterns(htmlCode, cssCode);
 }
 
 const renderHtml = function (event) {
@@ -61,9 +64,10 @@ const renderHtml = function (event) {
 
   renderedHtml.appendChild(tempContainer);
 
-  analyzeHtmlCss(htmlTextArea.value, cssTextArea.value);
+  // analyzeHtmlCss(htmlTextArea.value, cssTextArea.value);
   detectDarkPatterns(htmlTextArea.value, cssTextArea.value);
 };
+
 
 function performFittsAnalysis() {
   const interactiveElements = Array.from(
@@ -133,6 +137,7 @@ function performFittsAnalysis() {
 // DARK PATTERN DETECTION CODE
 const detectDarkPatterns = (htmlCode, cssCode) => {
   let data=``;
+  reportData = '';
   const darkPatterns = [];
 
   const parser = new DOMParser();
@@ -162,9 +167,11 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
             type: 'False Hierarchy in Pop-up Ad',
             ad: ad.outerHTML
           });
-          data+=`type: 'False Hierarchy in Pop-up Ad'`;
+          data+=`type: 'False Hierarchy in Pop-up Ad'<br>`;
         }
       }
+      // closeButtonStyles.backgroundcolor = 'red';
+      // renderHtml();
     }
   });
 
@@ -180,7 +187,7 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
           type: 'Hidden Terms in Free Trial Offer',
           offer: offer.outerHTML
         });
-        data+=`type: 'Hidden Terms in Free Trial Offer'`;
+        data+=`type: 'Hidden Terms in Free Trial Offer'<br>`;
       }
     }
   });
@@ -193,7 +200,7 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
           type: 'Preselected Checkbox - Dark Pattern',
           element: checkbox.outerHTML
         });
-        data += `type: 'Preselected Checkbox - Dark Pattern'`;
+        data += `type: 'Preselected Checkbox - Dark Pattern'<br>`;
       }
   });
 
@@ -210,7 +217,7 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
           type: 'Aesthetic Manipulation',
           ad: ad.outerHTML
         });
-        data+=`type: 'Aesthetic Manipulation'`;
+        data+=`type: 'Aesthetic Manipulation'<br>`;
       }
     }
   });
@@ -228,10 +235,10 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
           type: 'Manipulative techniques',
           offerend: offerend.outerHTML
         });
-        data+=`type: 'Manipulative techniques'`;
+        data+=`type: 'Manipulative techniques'<br>`;
       }
     }
-    reportData+=data;
+    // reportData+=data;
   });
 
   reportData+=data;
