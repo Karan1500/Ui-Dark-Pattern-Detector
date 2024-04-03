@@ -1,55 +1,6 @@
-let reportData = ``;
+let reportData = `<h1 style="text-align: center;">Ui  DARK PATTERN DETECTOR</h1>`;
 
-const countHtmlElements = (htmlCode) => {
-  const parser = new DOMParser();
-  const htmlDoc = parser.parseFromString(htmlCode, "text/html");
-  const numHtmlElements = htmlDoc.getElementsByTagName("*").length;
-  return numHtmlElements;
-};
-
-const processCss = (cssCode) => {
-  const numCssRules = cssCode.split("}").length - 1;
-  const numCssDeclarations = cssCode.split(";").length - 1;
-  const selectorRegex = /[^,{]+(?=,|\s*{)/g;
-  const numCssSelectors = (cssCode.match(selectorRegex) || []).length;
-
-  const cssMetrics = {
-    numCssRules,
-    numCssDeclarations,
-    numCssSelectors,
-  };
-  return cssMetrics;
-};
-
-function generateReportContent(numHtmlElements, cssMetrics) {
-  const reportContent = `
-    <h1>Website Analysis Report</h1>
-    <h2>HTML Analysis</h2>
-    <p>Number of HTML elements: ${numHtmlElements}</p>
-    
-    <h2>CSS Analysis</h2>
-    <p>Number of CSS rules: ${cssMetrics.numCssRules}</p>
-    <p>Number of CSS declarations: ${cssMetrics.numCssDeclarations}</p>
-    <p>Number of CSS selectors: ${cssMetrics.numCssSelectors}</p>
-    <br> <br>
-    
-    <h2 style="text-align:center;">Fitts' Law Analysis Report</h2>
-  `;
-  return reportContent;
-}
-
-function analyzeHtmlCss(htmlCode, cssCode) {
-  // Reset reportData before adding new data
-  reportData = '';
-
-  // Call generateReportContent to get HTML and CSS analysis, but don't include it in reportData
-  const numHtmlElements = countHtmlElements(htmlCode);
-  const cssMetrics = processCss(cssCode);
-  const reportContent = generateReportContent(numHtmlElements, cssMetrics);
-  
-  // Call detectDarkPatterns and add its result to reportData
-  detectDarkPatterns(htmlCode, cssCode);
-}
+reportData+=`<br><br>`;
 
 const renderHtml = function (event) {
   event.preventDefault();
@@ -64,80 +15,13 @@ const renderHtml = function (event) {
 
   renderedHtml.appendChild(tempContainer);
 
-  // analyzeHtmlCss(htmlTextArea.value, cssTextArea.value);
   detectDarkPatterns(htmlTextArea.value, cssTextArea.value);
 };
 
-
-function performFittsAnalysis() {
-  const interactiveElements = Array.from(
-    document
-      .querySelector(".rendered-html")
-      .querySelectorAll('button, a, input[type="text"], select, textarea')
-  );
-  console.log("Interactive Elements", interactiveElements);
-  const metrics = calculateMetrics(interactiveElements);
-
-  metrics.forEach((metric) => {
-    const {
-      element,
-      targetSize,
-      width,
-      nearestInteractiveElementDistance,
-      nearestSubmitButtonDistance,
-      referencePointDistance,
-      importantContentDistance,
-    } = metric;
-
-    if (!element) return;
-    console.log("Element", element, "width", width, "targetSize", targetSize);
-
-    // Calculate Fitts' law parameters
-    let distance = Math.max(
-      nearestInteractiveElementDistance,
-      nearestSubmitButtonDistance,
-      referencePointDistance,
-      importantContentDistance
-    );
-    if (distance === NaN || distance === Infinity) distance = 10000;
-    const indexDifficulty = Math.log2(distance / targetSize + 1);
-
-    // Generate analysis report
-    const report = `
-    <p><strong>Element:</strong> ${element.tagName}</p>
-    <p><strong>Width:</strong> ${width}px</p>
-    <p><strong>Target Size:</strong> ${targetSize}px</p>
-    <p><strong>Distance to Nearest Interactive Element:</strong> ${nearestInteractiveElementDistance}px</p>
-    <p><strong>Distance to Nearest Submit Button:</strong> ${nearestSubmitButtonDistance}px</p>
-    <p><strong>Distance to Reference Point:</strong> ${referencePointDistance}px</p>
-    <p><strong>Distance to Important Content:</strong> ${importantContentDistance}px</p>
-    <p><strong>Index of Difficulty:</strong> ${indexDifficulty.toFixed(2)}</p>
-   <p><strong>Analysis:</strong> ${
-     indexDifficulty < 1
-       ? "The design meets Fitts' law requirements. No significant improvements are needed."
-       : "The design violates Fitts' law constraints. Consider the following improvements:"
-   }</p>
-    <ul>
-      <li>Increase the target size to improve accuracy and reduce errors. Larger targets are easier to hit, especially for users with less precise motor control.</li>
-      <li>Reduce the distance to interactive elements for faster interaction. Minimize the distance between the user's initial cursor position and the target element to improve efficiency and reduce movement time.</li>
-      <li>Place important content closer to the reference point for easier access. Consider organizing the layout to bring frequently used or critical elements closer to the user's natural starting position or the center of the screen.</li>
-      <li>Ensure scrollable areas are easily reachable and distinguishable. If there are scrollable regions, such as long lists or content sections, make sure the scrollbars or scrollable areas are clearly visible and easily accessible without requiring excessive mouse movement.</li>
-      <li>Use visual cues to guide users to interactive elements. Employ visual affordances such as color contrast, hover effects, or iconography to draw attention to interactive elements and make them more discoverable.</li>
-      <li>Consider touch-friendly design for mobile or touch-enabled devices. Adapt the design to accommodate touch-based interactions, such as using larger touch targets and providing appropriate spacing between elements to prevent accidental touches.</li>
-      <li>Conduct user testing and gather feedback. User feedback and testing can provide valuable insights into specific pain points or areas for improvement that may not be immediately evident through the Fitts' law analysis alone.</li>
-    </ul>
-  `;
-
-    reportData += report;
-  });
-}
-
-
-
 // DARK PATTERN DETECTION CODE
 const detectDarkPatterns = (htmlCode, cssCode) => {
+  let total=0;
   let data=``;
-  reportData = '';
   const darkPatterns = [];
 
   const parser = new DOMParser();
@@ -167,7 +51,9 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
             type: 'False Hierarchy in Pop-up Ad',
             ad: ad.outerHTML
           });
-          data+=`type: 'False Hierarchy in Pop-up Ad'<br>`;
+          data+=`Type: 'False Hierarchy in Pop-up Ad'<br>`;
+          data+=`Description: The install/download button is presented such that it creates a feeling that it is more likely option as compared to the cancel button, but in reality its exactly opposite for a user. <br><br>`;
+          total++;
         }
       }
       // closeButtonStyles.backgroundcolor = 'red';
@@ -187,7 +73,9 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
           type: 'Hidden Terms in Free Trial Offer',
           offer: offer.outerHTML
         });
-        data+=`type: 'Hidden Terms in Free Trial Offer'<br>`;
+        data+=`Type: 'Hidden Terms in Free Trial Offer'<br>`;
+        data+=`Description: The terms and conditions like the money will be automatically debited from the users' account after the free-trial period ends are written in small or dull letters such that the user may not read it. <br><br>`;
+        total++;
       }
     }
   });
@@ -200,7 +88,9 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
           type: 'Preselected Checkbox - Dark Pattern',
           element: checkbox.outerHTML
         });
-        data += `type: 'Preselected Checkbox - Dark Pattern'<br>`;
+        data += `Type: 'Preselected Checkbox - Dark Pattern'<br>`;
+        data+=`Description: The checkbox or the toggle button for some optional activities like notification permission, or the unwanted data collection, or some extra amount while checkout are pre selected. <br><br>`;
+        total++;
       }
   });
 
@@ -217,7 +107,9 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
           type: 'Aesthetic Manipulation',
           ad: ad.outerHTML
         });
-        data+=`type: 'Aesthetic Manipulation'<br>`;
+        data+=`Type: 'Aesthetic Manipulation'<br>`;
+        data+=`Description: The size of the close button is kept very small such that in an effort to close the ad, user may end up in clicking on the ad itself and thus gets redirected to some unwanted link. <br><br>`;
+        total++;
       }
     }
   });
@@ -235,12 +127,17 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
           type: 'Manipulative techniques',
           offerend: offerend.outerHTML
         });
-        data+=`type: 'Manipulative techniques'<br>`;
+        data+=`Type: 'Manipulative techniques'<br>`;
+        data+=`Description: The countdown or the text like hurry up, sale ends soon, etc. are mentioned near a product in order to develop a sense of missing out in user, so the user may end up buying unnecessary things in hurry. <br><br>`;
+        total++;
       }
     }
-    // reportData+=data;
   });
 
+  reportData+=`<br><br>`;
+  reportData+=`<h5>Number of DARK PATTERNS = ${total}</h5> <br>`;
+  if(total)
+    reportData+=`<p>The detected dark patterns are as follows:</p> <br>`;
   reportData+=data;
   console.log("Detected dark patterns:", darkPatterns);
   return darkPatterns;
