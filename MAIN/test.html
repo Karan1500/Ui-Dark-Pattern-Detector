@@ -60,7 +60,7 @@
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0;
+            top: -20px; /* Shifted upwards by 20px */
             left: 0;
             right: 0;
             bottom: 0;
@@ -84,11 +84,11 @@
         }
 
         input:checked + .slider {
-            background-color: #2196F3;
+            background-color: #007bff; /* Changed color to blue */
         }
 
         input:focus + .slider {
-            box-shadow: 0 0 1px #2196F3;
+            box-shadow: 0 0 1px #007bff; /* Changed color to blue */
         }
 
         input:checked + .slider:before {
@@ -105,7 +105,8 @@
             border-radius: 50%;
         }
         span{
-            margin: 20px;
+            margin: 50px;
+            margin-left: -40px;
         }
         .ad-close {
             position: absolute;
@@ -124,12 +125,7 @@
             <input type="checkbox" id="checkbox" class="permission-checkbox" checked> Data Permission
         </label>
         <br>
-        <label class="switch">
-            <input type="checkbox" checked>  Notification Permission
-            <span class="slider round"></span>
-        </label>
-        <br>
-        <button style="color: #fff;background-color: transparent;" class="close">close</button>
+        <button style="color: #fff;background-color: transparent; border: 2px;" class="close">close</button>
         <button style="color: #fff;background-color: #007bff;" class="install">install</button>
         <button style="position: absolute;top: 10px;right: 10px;font-size: 8px;">&#x2715;</button>
         <p style="font-size: 10px;">Money will be automatically deducted after the free trial ends.</p>
