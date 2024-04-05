@@ -66,9 +66,9 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
   offers.forEach(offer => {
     const offerStyles = offer.style;
     const offerText = offer.innerText.toLowerCase();
-    if(offerText.includes('automatically deducted') || offerText.includes('free trial') || offerText.includes('will continue') || offerText.includes('free subscription'))
+    if(offerText.includes('automatically deducted') || offerText.includes('will continue'))
     {
-      if (parseInt(offerStyles.fontSize) < 12 || offerStyles.color === 'gray' || offerStyles.color === '#999') {
+      if (parseInt(offerStyles.fontSize) < 15 || offerStyles.color === 'gray' || offerStyles.color === '#999') {
         darkPatterns.push({
           type: 'Hidden Terms in Free Trial Offer',
           offer: offer.outerHTML
@@ -98,11 +98,14 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
   const popUpAd = findPopUpAds(htmlDoc);
   popUpAd.forEach(ad => {
     const smallCloseButton = findsmallCloseButton(ad);
+    console.log(smallCloseButton);
     const smallCloseButtonStyles = smallCloseButton.style;
     if(smallCloseButtonStyles)
     {
-      if(parseInt(smallCloseButtonStyles.fontSize) < 10)
+      console.log("bruhhhh");
+      if(parseInt(smallCloseButtonStyles.fontSize) < 15)
       {
+        console.log("hhhh");
         darkPatterns.push({
           type: 'Aesthetic Manipulation',
           ad: ad.outerHTML
@@ -119,8 +122,8 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
   offerends.forEach(offerend => {
     const offerendStyles = offerend.style;
     const offerendText = offerend.innerText.toLowerCase();
-    if(offerendText.includes('hurry up') || offerendText.includes('countdown')
-    || offerendText.includes('ending soon') || offerendText.includes('sale ends'))
+    if(offerendText.includes('hurry up') || offerendText.includes('countdown') || offerendText.includes(`don't miss out`)
+    || offerendText.includes('ending soon') || offerendText.includes('sale ends') || offerendText.includes('limited time'))
     {
       if (parseInt(offerendStyles.fontSize) > 15) {
         darkPatterns.push({
@@ -133,6 +136,44 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
       }
     }
   });
+
+const offerendsh2 = htmlDoc.querySelectorAll('h2','h1');
+offerendsh2.forEach(offerend => {
+  const offerendStyles = offerend.style;
+  const offerendText = offerend.innerText.toLowerCase();
+  if(offerendText.includes('hurry up') || offerendText.includes('countdown') || offerendText.includes(`don't miss out`)
+  || offerendText.includes('ending soon') || offerendText.includes('sale ends') || offerendText.includes('limited time'))
+  {
+    
+    darkPatterns.push({
+      type: 'Manipulative techniques',
+      offerend: offerend.outerHTML
+    });
+    data+=`Type: 'Manipulative techniques'<br>`;
+    data+=`Description: The countdown or the text like hurry up, sale ends soon, etc. are mentioned near a product in order to develop a sense of missing out in user, so the user may end up buying unnecessary things in hurry. <br><br>`;
+    total++;
+    
+  }
+  });
+
+// const offerendsh1 = htmlDoc.querySelectorAll('h1');
+// offerendsh1.forEach(offerend => {
+//   const offerendStyles = offerend.style;
+//   const offerendText = offerend.innerText.toLowerCase();
+//   if(offerendText.includes('hurry up') || offerendText.includes('countdown') || offerendText.includes(`don't miss out`)
+//   || offerendText.includes('ending soon') || offerendText.includes('sale ends') || offerendText.includes('limited time'))
+//   {
+//     if (parseInt(offerendStyles.fontSize) > 15) {
+//       darkPatterns.push({
+//         type: 'Manipulative techniques',
+//         offerend: offerend.outerHTML
+//       });
+//       data+=`Type: 'Manipulative techniques'<br>`;
+//       data+=`Description: The countdown or the text like hurry up, sale ends soon, etc. are mentioned near a product in order to develop a sense of missing out in user, so the user may end up buying unnecessary things in hurry. <br><br>`;
+//       total++;
+//     }
+//   }
+//   });
 
   reportData+=`<br><br>`;
   reportData+=`<h5>Number of DARK PATTERNS = ${total}</h5> <br>`;
@@ -160,6 +201,7 @@ const isSensitiveInput = (input) => {
 };
 
 function findsmallCloseButton(ad) {
+  console.log("buttosmalll");
   const smallCloseButtons = ad.querySelectorAll('button');
   return Array.from(smallCloseButtons).find(button => {
     return (
@@ -179,6 +221,7 @@ function findPopUpAds(code) {
       element.textContent.includes('ad') ||
       element.textContent.includes('AD')
     ) {
+      console.log("test1k");
       popUpAds.push(element);
     }
   });
