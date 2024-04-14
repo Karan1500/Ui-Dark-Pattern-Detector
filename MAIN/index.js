@@ -222,19 +222,13 @@ const isSensitiveInput = (input) => {
 function findsmallCloseButton(ad) {
   console.log("buttosmalll");
   const smallCloseButtons = ad.querySelectorAll('button');
-  const closeButton = Array.from(smallCloseButtons).find(button => {
+  return Array.from(smallCloseButtons).find(button => {
     return (
       button.textContent.trim() === '✕' || 
       button.textContent.trim() === '\u00D7' || 
       button.textContent.trim() === '&times;'
     );
   });
-  if (closeButton) {
-    return closeButton;
-  } else {
-    console.log("Close button not found");
-    return null;
-  }
 }
 
 function findPopUpAds(code) {
