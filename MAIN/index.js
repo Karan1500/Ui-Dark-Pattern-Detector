@@ -37,7 +37,7 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
       const installButtonStyles = installButton.style;
       if(closeButtonStyles && installButtonStyles)
       {
-        if (closeButtonStyles.color === installButtonStyles.color && closeButtonStyles.backgroundColor === 'transparent') {
+        if (closeButtonStyles.backgroundColor === 'transparent') {
           const style = document.createElement('style');
           style.textContent = `
             .close-button-red-border {
@@ -66,7 +66,7 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
   offers.forEach(offer => {
     const offerStyles = offer.style;
     const offerText = offer.innerText.toLowerCase();
-    if(offerText.includes('automatically deducted') || offerText.includes('will continue'))
+    if(offerText.includes('automatically deducted') || offerText.includes('will continue') || offerText.includes('terms and conditions') || offerText.includes('t&c'))
     {
       if (parseInt(offerStyles.fontSize) < 15 || offerStyles.color === 'gray' || offerStyles.color === '#999') {
         darkPatterns.push({
@@ -103,7 +103,7 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
     if(smallCloseButtonStyles)
     {
       console.log("bruhhhh");
-      if(parseInt(smallCloseButtonStyles.fontSize) < 15)
+      if(parseInt(smallCloseButtonStyles.fontSize) < 20)
       {
         console.log("hhhh");
         darkPatterns.push({
@@ -137,7 +137,26 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
     }
   });
 
-const offerendsh2 = htmlDoc.querySelectorAll('h2','h1');
+const offerendsh3 = htmlDoc.querySelectorAll('h2');
+offerendsh3.forEach(offerend => {
+  const offerendStyles = offerend.style;
+  const offerendText = offerend.innerText.toLowerCase();
+  if(offerendText.includes('hurry up') || offerendText.includes('countdown') || offerendText.includes(`don't miss out`)
+  || offerendText.includes('ending soon') || offerendText.includes('sale ends') || offerendText.includes('limited time'))
+  {
+    
+    darkPatterns.push({
+      type: 'Manipulative techniques',
+      offerend: offerend.outerHTML
+    });
+    data+=`Type: 'Manipulative techniques'<br>`;
+    data+=`Description: The countdown or the text like hurry up, sale ends soon, etc. are mentioned near a product in order to develop a sense of missing out in user, so the user may end up buying unnecessary things in hurry. <br><br>`;
+    total++;
+    
+  }
+  });
+
+const offerendsh2 = htmlDoc.querySelectorAll('h1');
 offerendsh2.forEach(offerend => {
   const offerendStyles = offerend.style;
   const offerendText = offerend.innerText.toLowerCase();
@@ -203,13 +222,19 @@ const isSensitiveInput = (input) => {
 function findsmallCloseButton(ad) {
   console.log("buttosmalll");
   const smallCloseButtons = ad.querySelectorAll('button');
-  return Array.from(smallCloseButtons).find(button => {
+  const closeButton = Array.from(smallCloseButtons).find(button => {
     return (
       button.textContent.trim() === '✕' || 
       button.textContent.trim() === '\u00D7' || 
       button.textContent.trim() === '&times;'
     );
   });
+  if (closeButton) {
+    return closeButton;
+  } else {
+    console.log("Close button not found");
+    return null;
+  }
 }
 
 function findPopUpAds(code) {
@@ -232,7 +257,8 @@ function findCloseButton(ad) {
   const closeButtons = ad.querySelectorAll('button'); 
   return Array.from(closeButtons).find(button => {
     return (
-      button.textContent.toLowerCase().includes('close') 
+      button.textContent.toLowerCase().includes('close') ||
+      button.textContent.toLowerCase().includes('learn more')
     );
   });
 }
