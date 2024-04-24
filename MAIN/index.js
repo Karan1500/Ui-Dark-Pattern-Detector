@@ -36,15 +36,6 @@ const detectDarkPatterns = (htmlCode) => {
       if(closeButtonStyles && installButtonStyles)
       {
         if (closeButtonStyles.backgroundColor === 'transparent') {
-          const style = document.createElement('style');
-          style.textContent = `
-            .close-button-red-border {
-              border: 1px solid red !important;
-            }
-          `;
-          document.head.appendChild(style);
-          closeButton.classList.add('close-button-red-border');
-
           darkPatterns.push({
             type: 'False Hierarchy in Pop-up Ad',
             ad: ad.outerHTML
@@ -54,8 +45,6 @@ const detectDarkPatterns = (htmlCode) => {
           total++;
         }
       }
-      // closeButtonStyles.backgroundcolor = 'red';
-      // renderHtml();
     }
   });
 
@@ -171,25 +160,6 @@ offerendsh2.forEach(offerend => {
   }
   });
 
-// const offerendsh1 = htmlDoc.querySelectorAll('h1');
-// offerendsh1.forEach(offerend => {
-//   const offerendStyles = offerend.style;
-//   const offerendText = offerend.innerText.toLowerCase();
-//   if(offerendText.includes('hurry up') || offerendText.includes('countdown') || offerendText.includes(`don't miss out`)
-//   || offerendText.includes('ending soon') || offerendText.includes('sale ends') || offerendText.includes('limited time'))
-//   {
-//     if (parseInt(offerendStyles.fontSize) > 15) {
-//       darkPatterns.push({
-//         type: 'Manipulative techniques',
-//         offerend: offerend.outerHTML
-//       });
-//       data+=`Type: 'Manipulative techniques'<br>`;
-//       data+=`Description: The countdown or the text like hurry up, sale ends soon, etc. are mentioned near a product in order to develop a sense of missing out in user, so the user may end up buying unnecessary things in hurry. <br><br>`;
-//       total++;
-//     }
-//   }
-//   });
-
   reportData+=`<br><br>`;
   reportData+=`<h5>Number of DARK PATTERNS = ${total}</h5> <br>`;
   if(total)
@@ -236,7 +206,6 @@ function findPopUpAds(code) {
       element.textContent.includes('ad') ||
       element.textContent.includes('AD')
     ) {
-      console.log("test1k");
       popUpAds.push(element);
     }
   });
@@ -279,8 +248,6 @@ const downloadReport = function () {
     pagebreakBefore: function (
       currentNode,
       followingNodesOnPage,
-      nodesOnNextPage,
-      previousNodesOnPage
     ) {
       return (
         currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0
