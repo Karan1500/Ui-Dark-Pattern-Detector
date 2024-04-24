@@ -5,21 +5,19 @@ reportData+=`<br><br>`;
 const renderHtml = function (event) {
   event.preventDefault();
   const htmlTextArea = document.querySelector(".html-content");
-  const cssTextArea = document.querySelector(".css-content");
   document.querySelector(".output-container").classList.remove("d-none");
   let renderedHtml = document.querySelector(".rendered-html");
 
   const tempContainer = document.createElement("div");
   tempContainer.innerHTML = htmlTextArea.value;
-  tempContainer.innerHTML += `<style>${cssTextArea.value}</style>`;
 
   renderedHtml.appendChild(tempContainer);
 
-  detectDarkPatterns(htmlTextArea.value, cssTextArea.value);
+  detectDarkPatterns(htmlTextArea.value);
 };
 
 // DARK PATTERN DETECTION CODE
-const detectDarkPatterns = (htmlCode, cssCode) => {
+const detectDarkPatterns = (htmlCode) => {
   let total=0;
   let data=``;
   const darkPatterns = [];
@@ -102,10 +100,8 @@ const detectDarkPatterns = (htmlCode, cssCode) => {
     const smallCloseButtonStyles = smallCloseButton.style;
     if(smallCloseButtonStyles)
     {
-      console.log("bruhhhh");
       if(parseInt(smallCloseButtonStyles.fontSize) < 20)
       {
-        console.log("hhhh");
         darkPatterns.push({
           type: 'Aesthetic Manipulation',
           ad: ad.outerHTML
@@ -261,7 +257,11 @@ function findInstallButton(ad) {
   const installButtons = ad.querySelectorAll('button'); 
   return Array.from(installButtons).find(button => {
     return (
-      button.textContent.toLowerCase().includes('install')
+      button.textContent.toLowerCase().includes('install') ||
+      button.textContent.toLowerCase().includes('install now') ||
+      button.textContent.toLowerCase().includes('install app') ||
+      button.textContent.toLowerCase().includes('buy now') ||
+      button.textContent.toLowerCase().includes('buy')
     );
   });
 }
