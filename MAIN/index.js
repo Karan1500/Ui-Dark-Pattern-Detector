@@ -186,7 +186,6 @@ const isSensitiveInput = (input) => {
 };
 
 function findsmallCloseButton(ad) {
-  console.log("buttosmalll");
   const smallCloseButtons = ad.querySelectorAll('button');
   return Array.from(smallCloseButtons).find(button => {
     return (
@@ -292,8 +291,6 @@ preTags.forEach((preTag) => {
     window.getSelection().addRange(range);
 
     try {
-      document.execCommand("copy");
-
       copyButton.innerText = "Copied!";
       setTimeout(function () {
         copyButton.innerText = "Copy";
